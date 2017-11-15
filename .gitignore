@@ -1,0 +1,8 @@
+*.[oad]
+cmake
+*.pdf
+compile_commands.json
+.clang-format
+.clang
+*.so
+__pycache__

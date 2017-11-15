@@ -1,0 +1,14 @@
+image: registry.gitlab.com/signal9/cpp-env
+
+cache:
+  paths:
+    - .conan/
+
+build_and_test:
+  script:
+      - . /bootstrap.sh
+      - mkdir stage && cd stage
+      - conan install -u -r private ..
+      - cmake -DBUILD_DEMO=ON -DCMAKE_BUILD_TYPE=Release -G Ninja ..
+      - ninja
+      - du -sh $CONAN_USER_HOME/.conan
