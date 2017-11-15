@@ -4,7 +4,7 @@ class ChromeRemoteConan(ConanFile):
     name = 'chrome_remote'
     version = '1.0.0'
     license = 'MIT'
-    url = 'http://www.example.com'
+    url = 'https://gitlab.com/signal9/chrome_remote'
     options = {'shared':[True,False]}
     default_options = 'shared=True', \
 		'Beast:commit=9dc9ca13b9c08c1597d05bcf6c19be357e426041'
