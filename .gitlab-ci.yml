@@ -1,10 +1,8 @@
-image: registry.gitlab.com/signal9/cpp-env
-
-cache:
-  paths:
-    - .conan/
-
 build_and_test:
+  cache:
+    paths:
+      - .conan/
+  image: registry.gitlab.com/signal9/cpp-env
   script:
       - . /bootstrap.sh
       - mkdir stage && cd stage
@@ -12,3 +10,15 @@ build_and_test:
       - cmake -DBUILD_DEMO=ON -DCMAKE_BUILD_TYPE=Release -G Ninja ..
       - ninja
       - du -sh $CONAN_USER_HOME/.conan
+
+upload_conan:
+  image: alpine
+  script:
+    - apk update
+    - apk add python3 build-base curl git
+    - curl -k -L --compressed 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py
+    - python3 get-pip.py
+    - python3 -m pip install --user conan
+    - ~/.local/bin/conan remote add signal9 https://api.bintray.com/conan/signal9/conan
+    - ~/.local/bin/conan user -p $CONAN_PASSWORD -r signal9 $CONAN_USERNAME
+    - tools/upload_conanfile.sh

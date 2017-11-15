@@ -6,7 +6,7 @@ Chromium DevTools remote for C++.
 
 Example printing to PDF.
 
-```C++
+```c++
 #include <boost/asio.hpp>
 #include <chrome_remote/chrome_remote.h>
 
