@@ -4,7 +4,7 @@ ORIG_DIR=$(pwd)
 TMP_DIR=$(mktemp -d)
 
 cd $TMP_DIR
-cp -rT $ORIG_DIR .
+cp -r $ORIG_DIR/. .
 cd $TMP_DIR
 
 find . -name 'conanfile.py' -exec sed -i 's/\t/    /g' {} \;
