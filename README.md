@@ -73,3 +73,4 @@ cmake --build .
 
 * Conan (can be installed via `pip`)
 * CMake
+* Boost
