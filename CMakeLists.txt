@@ -10,9 +10,9 @@ include(GNUInstallDirs)
 conan_basic_setup(TARGETS)
 
 find_package(Threads REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system iostreams)
+find_package(Boost REQUIRED COMPONENTS system iostreams filesystem)
 
-add_library(${PROJECT_NAME} src/chrome_remote.cpp)
+add_library(${PROJECT_NAME} src/chrome_remote.cpp src/browser.cpp)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(DIRECTORY include/chrome_remote DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
@@ -37,5 +37,5 @@ foreach(TARGET IN LISTS TARGETS)
 		endif()
 	endif()
 	target_include_directories(${TARGET} PRIVATE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
-	target_link_libraries(${TARGET} PRIVATE Boost::boost Boost::iostreams Boost::system Threads::Threads ${CONAN_TARGETS})
+	target_link_libraries(${TARGET} PRIVATE Boost::boost Boost::iostreams Boost::system Boost::filesystem Threads::Threads ${CONAN_TARGETS})
 endforeach()

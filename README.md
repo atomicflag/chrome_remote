@@ -13,9 +13,15 @@ Example printing to PDF.
 int main(int, char* [])
 {
   boost::asio::io_service io;
-  chrome_remote::ChromeRemote remote{io};
 
-  remote.connect("127.0.0.1:9009")
+  /* RAII wrapper over a headless chromium process */
+  chrome_remote::Browser browser{io};
+
+  /* Chromium DevTools remote */
+  chrome_remote::Remote remote{io};
+
+  browser.ready()
+    .then(remote.connect(browser))
     .then(chrome_remote::print_to_pdf(
       remote, "http://www.example.com", "example.pdf"))
     .done();
@@ -24,8 +30,6 @@ int main(int, char* [])
   return 0;
 }
 ```
-
-Use `tools/run_chromium.sh` to launch headless chromium instance.
 
 ## Use with Conan
 
@@ -41,7 +45,7 @@ Include in your `conanfile.txt`.
 
 ```txt
 [requires]
-chrome_remote/1.0.0@signal9/stable
+chrome_remote/1.1.0@signal9/stable
 
 [generators]
 cmake

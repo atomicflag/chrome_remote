@@ -5,9 +5,15 @@
 int main(int, char* [])
 {
 	boost::asio::io_service io;
-	chrome_remote::ChromeRemote remote{io};
 
-	remote.connect("127.0.0.1:9009")
+	/* RAII wrapper over a headless chromium process */
+	chrome_remote::Browser browser{io};
+
+	/* Chromium devtools remote */
+	chrome_remote::Remote remote{io};
+
+	browser.ready()
+		.then(remote.connect(browser))
 		.then(chrome_remote::print_to_pdf(
 			remote, "http://www.example.com", "example.pdf"))
 		.done();

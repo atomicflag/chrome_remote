@@ -1,20 +1,18 @@
 #pragma once
 
-#include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <cppcodec/base64_default_rfc4648.hpp>
 #include <deque>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <json.hpp>
-#include <regex>
 #include <string_view>
 
 #include "asio_continuable.h"
+#include "browser.h"
 
 namespace chrome_remote {
 using json = nlohmann::json;
-namespace ba = boost::asio;
 using tcp = ba::ip::tcp;
 namespace be = boost::beast;
 namespace ws = be::websocket;
@@ -26,19 +24,24 @@ namespace impl {
 		const std::vector<std::uint8_t>& data);
 } // namespace impl
 
-class ChromeRemote {
+class Remote {
 private:
+	auto resolve_host(
+		const std::string& host_, const std::string& port)
+	{
+		host = fmt::format("{}:{}", host_, port);
+		return impl::resolve(socket.get_io_service(), {host_, port})
+			.then([&](auto&& ep) {
+				endpoint = std::forward<decltype(ep)>(ep);
+			});
+	}
+
 	auto resolve_host(const std::string& host_)
 	{
 		static const std::regex rp{R"_(\s*([^:]+):([^\s]+)\s*)_"};
 		std::smatch parts;
 		std::regex_search(host_, parts, rp);
-		host = fmt::format("{}:{}", parts[1], parts[2]);
-		return impl::resolve(
-			socket.get_io_service(), {parts[1], parts[2]})
-			.then([&](auto&& ep) {
-				endpoint = std::forward<decltype(ep)>(ep);
-			});
+		return resolve_host(parts[1], parts[2]);
 	}
 
 	auto connect()
@@ -103,7 +106,7 @@ private:
 	}
 
 public:
-	ChromeRemote(ba::io_service& io);
+	Remote(ba::io_service& io);
 
 	auto call(const std::string& method, json params = json({}))
 	{
@@ -153,6 +156,12 @@ public:
 		return resolve_host(host_).then(connect());
 	}
 
+	auto connect(const Browser& browser)
+	{
+		return resolve_host(browser.host, browser.port)
+			.then(connect());
+	}
+
 private:
 	tcp::socket socket;
 	tcp::endpoint endpoint;
@@ -163,8 +172,8 @@ private:
 	std::string host;
 };
 
-inline auto print_to_pdf(ChromeRemote& remote, std::string_view url,
-	std::string_view filename)
+inline auto print_to_pdf(
+	Remote& remote, std::string_view url, std::string_view filename)
 {
 	return remote.call("Page.enable")
 		.then(remote.call("Page.navigate",

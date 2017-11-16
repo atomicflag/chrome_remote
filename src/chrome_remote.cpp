@@ -10,7 +10,7 @@ using array_source = io::array_source;
 using file_sink = io::file_descriptor_sink;
 using io::copy;
 
-ChromeRemote::ChromeRemote(ba::io_service& io)
+Remote::Remote(ba::io_service& io)
 	: socket{io}
 {
 }
