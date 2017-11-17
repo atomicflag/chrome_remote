@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(chrome_remote LANGUAGES CXX)
+project(chrome_remote LANGUAGES CXX VERSION 1.1.1)
 
 option(BUILD_DEMO "Build demo app" OFF)
 option(USE_MODULES "Use Clang modules" OFF)

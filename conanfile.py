@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ChromeRemoteConan(ConanFile):
 	name = 'chrome_remote'
-	version = '1.1.0'
+	version = '1.1.1'
 	license = 'MIT'
 	url = 'https://gitlab.com/signal9/chrome_remote'
 	options = {'shared':[True,False]}

@@ -2,10 +2,10 @@
 
 #include <boost/beast.hpp>
 #include <cppcodec/base64_default_rfc4648.hpp>
-#include <deque>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <json.hpp>
+#include <queue>
 #include <string_view>
 
 #include "asio_continuable.h"
@@ -88,7 +88,7 @@ private:
 					p.set_value(std::forward<decltype(val)>(val));
 					return;
 				}
-				log.emplace_front(std::forward<decltype(val)>(val));
+				log.emplace(std::forward<decltype(val)>(val));
 				poll(std::move(p), this_id);
 			});
 	}
@@ -129,8 +129,8 @@ public:
 				});
 				return;
 			}
-			p.set_value(std::move(log.back()));
-			log.pop_back();
+			p.set_value(std::move(log.front()));
+			log.pop();
 		});
 	}
 
@@ -141,8 +141,8 @@ public:
 				poll_wait(std::move(f), std::forward<decltype(p)>(p));
 				return;
 			}
-			json val{std::move(log.back())};
-			log.pop_back();
+			json val{std::move(log.front())};
+			log.pop();
 			if (f(val)) {
 				p.set_value(std::move(val));
 				return;
@@ -168,7 +168,7 @@ private:
 	be::flat_buffer buffer;
 	ws::stream<tcp::socket&> websocket{socket};
 	int message_id{0};
-	std::deque<json> log;
+	std::queue<json> log;
 	std::string host;
 };
 

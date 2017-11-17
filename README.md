@@ -45,7 +45,7 @@ Include in your `conanfile.txt`.
 
 ```txt
 [requires]
-chrome_remote/1.1.0@signal9/stable
+chrome_remote/1.1.1@signal9/stable
 
 [generators]
 cmake
