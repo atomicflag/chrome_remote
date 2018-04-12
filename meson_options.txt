@@ -1,0 +1,2 @@
+option('use_modules', type : 'boolean', value : true)
+option('build_demo', type : 'boolean', value : false)
