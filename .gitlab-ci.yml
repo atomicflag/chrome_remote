@@ -6,8 +6,12 @@ build_and_test:
   script:
       - . /bootstrap.sh
       - mkdir stage && cd stage
-      - conan install -u -r private ..
-      - cmake -DBUILD_DEMO=ON -DCMAKE_BUILD_TYPE=Release -G Ninja ..
+      - conan remote add signal9 https://api.bintray.com/conan/signal9/conan || true
+      - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
+      - conan remote add grafikrobot https://api.bintray.com/conan/grafikrobot/public-conan || true
+      - conan install -u -b missing ..
+      - patch_pcs
+      - meson --buildtype=release -Dbuild_demo=true
       - ninja
       - du -sh $CONAN_USER_HOME/.conan
 
@@ -19,6 +23,6 @@ upload_conan:
     - curl -k -L --compressed 'https://bootstrap.pypa.io/get-pip.py' > get-pip.py
     - python3 get-pip.py
     - python3 -m pip install --user conan
-    - ~/.local/bin/conan remote add private https://api.bintray.com/conan/signal9/conan
+    - ~/.local/bin/conan remote add signal9 https://api.bintray.com/conan/signal9/conan
     - ~/.local/bin/conan user -p $CONAN_PASSWORD -r private $CONAN_USERNAME
     - tools/upload_conanfile.sh

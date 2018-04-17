@@ -32,7 +32,7 @@ inline auto handshake(ws::stream<tcp::socket&>& socket,
 			auto&& p) mutable {
 			socket.async_handshake(to_boost(host), path,
 				[p = std::forward<decltype(p)>(p)](
-					auto ec, auto&&...) mutable {
+					auto ec) mutable {
 					if (ec) throw boost::system::system_error{ec};
 					p.set_value();
 				});

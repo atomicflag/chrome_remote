@@ -1,29 +1,39 @@
-from conans import ConanFile, CMake
+from conans import ConanFile, Meson
 
 class ChromeRemoteConan(ConanFile):
 	name = 'chrome_remote'
-	version = '1.1.1'
+	version = '1.2.0'
 	license = 'MIT'
 	url = 'https://gitlab.com/signal9/chrome_remote'
 	options = {'shared':[True,False]}
-	default_options = 'shared=True', \
-		'Beast:commit=9dc9ca13b9c08c1597d05bcf6c19be357e426041'
+	default_options = 'shared=True', '*:shared=True'
 	settings = 'os', 'compiler', 'build_type', 'arch'
 	build_policy = 'missing'
 	description = 'Chromium DevTools remote for C++.'
-	exports_sources = 'CMakeLists.txt', 'src/*', 'include/*'
-	generators = 'cmake'
+	exports_sources = \
+		'meson.build', \
+		'meson_options.txt', \
+		'src/*', \
+		'include/*'
+	generators = 'pkg_config'
 	requires = \
-		'fmt/latest@signal9/stable', \
-		'Beast/latest@signal9/stable', \
-		'json/latest@signal9/stable', \
-		'cppcodec/latest@signal9/stable', \
-		'continuable/latest@signal9/stable'
+		'fmt/4.1.0@signal9/stable', \
+		'boost_beast/[>=1.67]@bincrafters/testing', \
+		'boost_thread/[>=1.67]@bincrafters/testing', \
+		'boost_process/[>=1.67]@bincrafters/testing', \
+		'boost_asio/[>=1.67]@bincrafters/testing', \
+		'boost_iostreams/[>=1.67]@bincrafters/testing', \
+		'json/[>=3.1]@signal9/stable', \
+		'cppcodec/[>=1.0]@signal9/stable', \
+		'continuable/[>=3.0]@signal9/stable'
 
 	def build(self):
-		cmake = CMake(self)
-		cmake.configure(source_dir=self.source_folder)
-		cmake.install()
+		cmake = Meson(self)
+		cmake.configure(
+			source_folder=self.source_folder,
+			args=['--prefix='+self.package_folder]
+			)
+		cmake.build(targets=['install'])
 
 	def package_info(self):
 		self.cpp_info.libs = ['chrome_remote']

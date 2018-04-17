@@ -37,18 +37,20 @@ int main(int, char* [])
 # Install conan
 python -m pip install --user --upgrade conan
 
-# Add signal9's repository
-~/.local/bin/conan remote add signal9 https://api.bintray.com/conan/signal9/conan
+# Add conan repositories
+conan remote add signal9 https://api.bintray.com/conan/signal9/conan
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+conan remote add grafikrobot https://api.bintray.com/conan/grafikrobot/public-conan
 ```
 
 Include in your `conanfile.txt`.
 
 ```txt
 [requires]
-chrome_remote/1.1.1@signal9/stable
+chrome_remote/1.2.0@signal9/stable
 
 [generators]
-cmake
+pkg_config
 ```
 
 See also [Conan - Getting Started](http://docs.conan.io/en/latest/getting_started.html).
@@ -56,25 +58,26 @@ See also [Conan - Getting Started](http://docs.conan.io/en/latest/getting_starte
 ## Build (Development)
 
 ```sh
-# Install conan
-python -m pip install --user --upgrade conan
+# Install/upgrade meson and conan
+python -m pip install --user --upgrade conan meson
 
-# Add signal9's repository
-~/.local/bin/conan remote add signal9 https://api.bintray.com/conan/signal9/conan
+# Add conan repositories
+conan remote add signal9 https://api.bintray.com/conan/signal9/conan
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+conan remote add grafikrobot https://api.bintray.com/conan/grafikrobot/public-conan
 
 # Create build dir
 mkdir stage && cd stage
 
 # Install conan dependencies
-~/.local/bin/conan install -r signal9 ..
+conan install -u -b missing ..
 
 # Configure and build
-cmake ..
-cmake --build .
+meson ..
+ninja
 ```
 
 ## Dependencies
 
-* Conan (can be installed via `pip`)
-* CMake
-* Boost
+* Conan
+* Meson
