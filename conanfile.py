@@ -18,11 +18,11 @@ class ChromeRemoteConan(ConanFile):
 	generators = 'pkg_config'
 	requires = \
 		'fmt/4.1.0@signal9/stable', \
-		'boost_beast/[>=1.67]@bincrafters/testing', \
-		'boost_thread/[>=1.67]@bincrafters/testing', \
-		'boost_process/[>=1.67]@bincrafters/testing', \
-		'boost_asio/[>=1.67]@bincrafters/testing', \
-		'boost_iostreams/[>=1.67]@bincrafters/testing', \
+		'boost_beast/1.67.0@bincrafters/testing', \
+		'boost_thread/1.67.0@bincrafters/testing', \
+		'boost_process/1.67.0@bincrafters/testing', \
+		'boost_asio/1.67.0@bincrafters/testing', \
+		'boost_iostreams/1.67.0@bincrafters/testing', \
 		'json/[>=3.1]@signal9/stable', \
 		'cppcodec/[>=1.0]@signal9/stable', \
 		'continuable/[>=3.0]@signal9/stable'
