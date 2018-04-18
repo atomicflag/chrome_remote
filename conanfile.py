@@ -1,4 +1,4 @@
-from conans import ConanFile, Meson
+from conans import ConanFile, Meson, tools
 from os.path import exists
 
 class ChromeRemoteConan(ConanFile):
@@ -6,7 +6,7 @@ class ChromeRemoteConan(ConanFile):
 	version = '1.2.0'
 	license = 'MIT'
 	url = 'https://gitlab.com/signal9/chrome_remote'
-	options = {'shared':[True,False]}
+	options = {'shared':[True, False]}
 	default_options = 'shared=True', '*:shared=True'
 	settings = 'os', 'compiler', 'build_type', 'arch'
 	build_policy = 'missing'
@@ -29,12 +29,13 @@ class ChromeRemoteConan(ConanFile):
 		'continuable/[>=3.0]@signal9/stable'
 
 	def build(self):
-		cmake = Meson(self)
-		cmake.configure(
-			source_folder=self.source_folder,
-			args=['--prefix='+self.package_folder]
+		tools.mkdir('build')
+		meson = Meson(self)
+		meson.configure(
+			args=['--prefix='+self.package_folder],
+			build_folder='build'
 			)
-		cmake.build(targets=['install'])
+		meson.build(targets=['install'])
 
 	def package_info(self):
 		self.cpp_info.libs = ['chrome_remote']

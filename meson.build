@@ -17,14 +17,7 @@ deps = [
 	compiler.find_library('m', required : false)
 ]
 
-
 inc_dirs = include_directories(['src','include'])
-
-fvisibility_arg = '-fvisibility=hidden'
-if get_option('buildtype') != 'debug' and compiler.has_argument(fvisibility_arg)
-	add_project_arguments(fvisibility_arg, language : 'cpp')
-	add_project_link_arguments(fvisibility_arg, language : 'cpp')
-endif
 
 if get_option('use_modules') and compiler.has_argument('-fmodules')
 	modules_args = [
