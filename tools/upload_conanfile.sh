@@ -1,16 +1,6 @@
 #!/bin/sh -ue
 
-ORIG_DIR=$(pwd)
-TMP_DIR=$(mktemp -d)
+exec sed -i 's/\t/    /g' conanfile.py
 
-cd $TMP_DIR
-cp -r $ORIG_DIR/. .
-cd $TMP_DIR
-
-find . -name 'conanfile.py' -exec sed -i 's/\t/    /g' {} \;
-
-~/.local/bin/conan export signal9/stable
+~/.local/bin/conan export . signal9/stable
 ~/.local/bin/conan upload 'chrome_remote/*' -r signal9 -c --retry 5
-
-cd $ORIG_DIR
-rm -rf $TMP_DIR
